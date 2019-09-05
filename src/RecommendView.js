@@ -1,6 +1,6 @@
 import React from 'react';
-import {SafeAreaView, ScrollView, ActivityIndicator, FlatList, StyleSheet, Text, View, Image} from 'react-native';
-import {Colors, DebugInstructions, ReloadInstructions} from 'react-native/Libraries/NewAppScreen';
+import {ActivityIndicator, FlatList, Text, View} from 'react-native';
+import {Colors} from 'react-native/Libraries/NewAppScreen';
 import RecommendAppView from './RecommendAppView';
 import MobileApp from './MobileApp';
 
@@ -15,19 +15,15 @@ class RecommendView extends React.Component {
         return fetch('https://itunes.apple.com/hk/rss/topgrossingapplications/limit=10/json')
             .then((response) => response.json())
             .then((responseJson) => {
-
                 let appAry = [];
-
                 for (let item in responseJson.feed.entry) {
-                    appAry.push(new MobileApp(responseJson.feed.entry[item]))
+                    appAry.push(new MobileApp(responseJson.feed.entry[item]));
                 }
-
                 this.setState({
                     isLoading: false,
                     dataSource: appAry,
                 }, function () {
                 });
-
             })
             .catch((error) => {
                 console.error(error);
@@ -48,18 +44,12 @@ class RecommendView extends React.Component {
                 <Text>Recommend</Text>
                 <FlatList
                     style={{backgroundColor: Colors.white}}
-                    data={this.state.dataSource.filter(item => item.filter(this.props.searchText) )}
-                    renderItem={({item, index}) =>
-                        <RecommendAppView
-                            appInfo={item}
-                            index={index}
-                        />
-                    }
+                    data={this.state.dataSource.filter(item => item.filter(this.props.searchText))}
+                    renderItem={({item, index}) => <RecommendAppView appInfo={item}/>}
                     horizontal={true}
-                    keyExtractor={({id}, index) => id}
+                    keyExtractor={(item, index) => item.appID.toString()}
                     initialNumToRender={10}
                 />
-
             </View>
         );
     }

@@ -1,13 +1,13 @@
 import React from 'react';
 import {ActivityIndicator, Image, StyleSheet, Text, View} from 'react-native';
 import {Colors} from 'react-native/Libraries/NewAppScreen';
-import MobileApp from './MobileApp';
+import AppIconImageView from './AppIconImageView';
 
 class ListingAppView extends React.Component {
 
-    constructor(props){
+    constructor(props) {
         super(props);
-        this.state ={ isLoading: false}
+        this.state = {isLoading: false};
     }
 
     // componentDidMount(){
@@ -27,30 +27,29 @@ class ListingAppView extends React.Component {
     //         });
     // }
 
-    render(){
-
-        if(this.state.isLoading){
-            return(
+    render() {
+        if (this.state.isLoading) {
+            return (
                 <View style={{flex: 1, padding: 20}}>
                     <ActivityIndicator/>
                 </View>
-            )
+            );
         }
-
-        let app : MobileApp = this.props.appInfo
+        const {appInfo, index} = this.props;
         return (
             <View style={styles.view}>
-                <View style={{justifyContent: 'center',
-                    alignItems: 'center'}}>
-                    <Text style={styles.rankingText}>{this.props.index+1}</Text>
+                <View style={{
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                }}>
+                    <Text style={styles.rankingText}>{index + 1}</Text>
                 </View>
-                <Image source={{uri: app.imageUrl}}
-                       style={ styles.appIconImage}/>
+                <AppIconImageView url={appInfo.imageUrl} round={index % 2 != 0}/>
                 <View style={styles.infoView}>
-                    <Text ellipsizeMode={"tail"}
+                    <Text ellipsizeMode={'tail'}
                           numberOfLines={1}
-                          style={styles.titleText}>{app.name}</Text>
-                    <Text style={styles.titleText}>{app.category}</Text>
+                          style={styles.titleText}>{appInfo.name}</Text>
+                    <Text style={styles.titleText}>{appInfo.category}</Text>
                 </View>
             </View>
         );
@@ -62,27 +61,22 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         padding: 5,
         borderBottomWidth: 1,
-        borderBottomColor: Colors.light
+        borderBottomColor: Colors.light,
     },
     infoView: {
         padding: 5,
-        flex:1,
-        flexDirection:'column',
+        flex: 1,
+        flexDirection: 'column',
     },
     rankingText: {
         paddingLeft: 10,
         color: Colors.dark,
         fontSize: 20,
-        width: 45
+        width: 45,
     },
     titleText: {
         fontSize: 15,
     },
-    appIconImage: {
-        borderRadius: 15,
-        width: 70,
-        height: 70
-    }
 });
 
-export default ListingAppView
+export default ListingAppView;

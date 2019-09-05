@@ -7,12 +7,12 @@ import MobileApp from './MobileApp';
 
 class ListingView extends React.Component {
 
-    constructor(props){
+    constructor(props) {
         super(props);
-        this.state ={ isLoading: true }
+        this.state = {isLoading: true};
     }
 
-    componentDidMount(){
+    componentDidMount() {
         return fetch('https://itunes.apple.com/hk/rss/topfreeapplications/limit=100/json')
             .then((response) => response.json())
             .then((responseJson) => {
@@ -20,45 +20,40 @@ class ListingView extends React.Component {
                 let appAry = [];
 
                 for (let item in responseJson.feed.entry) {
-                    appAry.push(new MobileApp(responseJson.feed.entry[item]))
+                    appAry.push(new MobileApp(responseJson.feed.entry[item]));
                 }
 
                 this.setState({
                     isLoading: false,
                     dataSource: appAry,
-                }, function(){
+                }, function () {
                 });
 
             })
-            .catch((error) =>{
+            .catch((error) => {
                 console.error(error);
             });
     }
 
-    render(){
-        if(this.state.isLoading){
-            return(
+    render() {
+        if (this.state.isLoading) {
+            return (
                 <View style={{flex: 1, padding: 20}}>
                     <ActivityIndicator/>
                 </View>
-            )
+            );
         }
 
-        return(
-                <FlatList
-                    ListHeaderComponent={<RecommendView searchText={this.props.searchText}></RecommendView>}
-                    style = {{backgroundColor: Colors.white}}
-                    contentContainerStyle={{ flexGrow: 1 }}
-                    data={this.state.dataSource.filter(item => item.filter(this.props.searchText) )}
-                    renderItem={({item, index}) =>
-                        <ListingAppView
-                            appInfo={item}
-                            index={index}
-                        />
-
-                    }
-                    keyExtractor={({id}, index) => id}
-                />
+        return (
+            <FlatList
+                ListHeaderComponent={<RecommendView searchText={this.props.searchText}/>}
+                style={{backgroundColor: Colors.white}}
+                contentContainerStyle={{flexGrow: 1}}
+                data={this.state.dataSource.filter(item => item.filter(this.props.searchText))}
+                renderItem={({item, index}) => <ListingAppView index={index} appInfo={item}/>}
+                keyExtractor={(item, index) => item.appID.toString()}
+                initialNumToRender={10}
+            />
         );
     }
 }

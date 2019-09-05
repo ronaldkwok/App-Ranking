@@ -1,19 +1,19 @@
 import React from 'react';
-import {SafeAreaView, View} from 'react-native';
+import {SafeAreaView} from 'react-native';
 import ListingView from './ListingView';
 import {SearchBar} from 'react-native-elements';
 
 class MainScreen extends React.Component {
     state = {
-        search: "",
+        search: '',
     };
 
     updateSearch = search => {
-        this.setState({ search });
+        this.setState({search});
     };
 
     render() {
-        const { search } = this.state;
+        const {search} = this.state;
 
         return (
             <SafeAreaView style={{flex: 1}}>
