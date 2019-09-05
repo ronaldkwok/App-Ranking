@@ -1,8 +1,9 @@
 import React from 'react';
-import {SafeAreaView, ScrollView, ActivityIndicator, FlatList, StyleSheet, Text, View, Image} from 'react-native';
-import {Colors, DebugInstructions, ReloadInstructions} from 'react-native/Libraries/NewAppScreen';
+import {ActivityIndicator, FlatList, View} from 'react-native';
+import {Colors} from 'react-native/Libraries/NewAppScreen';
 import ListingAppView from './ListingAppView';
 import RecommendView from './RecommendView';
+import MobileApp from './MobileApp';
 
 class ListingView extends React.Component {
 
@@ -16,15 +17,15 @@ class ListingView extends React.Component {
             .then((response) => response.json())
             .then((responseJson) => {
 
-                let idAry = []
+                let appAry = [];
 
-                for (item in responseJson.feed.entry) {
-                    idAry.push(responseJson.feed.entry[item]["id"].attributes["im:id"])
+                for (let item in responseJson.feed.entry) {
+                    appAry.push(new MobileApp(responseJson.feed.entry[item]))
                 }
 
                 this.setState({
                     isLoading: false,
-                    dataSource: responseJson.feed.entry,
+                    dataSource: appAry,
                 }, function(){
                 });
 
@@ -32,16 +33,6 @@ class ListingView extends React.Component {
             .catch((error) =>{
                 console.error(error);
             });
-    }
-
-    filterApps(item){
-        const { searchText } = this.props;
-
-        if (searchText) {
-            let name = item["im:name"].label.toLocaleLowerCase()
-            return name.includes(searchText.toLocaleLowerCase());
-        }
-        return true
     }
 
     render(){
@@ -58,7 +49,7 @@ class ListingView extends React.Component {
                     ListHeaderComponent={<RecommendView searchText={this.props.searchText}></RecommendView>}
                     style = {{backgroundColor: Colors.white}}
                     contentContainerStyle={{ flexGrow: 1 }}
-                    data={this.state.dataSource.filter(item => this.filterApps(item))}
+                    data={this.state.dataSource.filter(item => item.filter(this.props.searchText) )}
                     renderItem={({item, index}) =>
                         <ListingAppView
                             appInfo={item}

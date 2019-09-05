@@ -1,6 +1,7 @@
 import React from 'react';
 import {ActivityIndicator, Image, StyleSheet, Text, View} from 'react-native';
 import {Colors} from 'react-native/Libraries/NewAppScreen';
+import MobileApp from './MobileApp';
 
 class ListingAppView extends React.Component {
 
@@ -36,20 +37,20 @@ class ListingAppView extends React.Component {
             )
         }
 
-        let appInfo = this.props.appInfo
+        let app : MobileApp = this.props.appInfo
         return (
             <View style={styles.view}>
                 <View style={{justifyContent: 'center',
                     alignItems: 'center'}}>
                     <Text style={styles.rankingText}>{this.props.index+1}</Text>
                 </View>
-                <Image source={{uri: appInfo["im:image"][1].label}}
+                <Image source={{uri: app.imageUrl}}
                        style={ styles.appIconImage}/>
                 <View style={styles.infoView}>
                     <Text ellipsizeMode={"tail"}
                           numberOfLines={1}
-                          style={styles.titleText}>{appInfo["im:name"].label}</Text>
-                    <Text style={styles.titleText}>{appInfo.category.attributes.label}</Text>
+                          style={styles.titleText}>{app.name}</Text>
+                    <Text style={styles.titleText}>{app.category}</Text>
                 </View>
             </View>
         );

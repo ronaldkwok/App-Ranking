@@ -2,6 +2,7 @@ import React from 'react';
 import {SafeAreaView, ScrollView, ActivityIndicator, FlatList, StyleSheet, Text, View, Image} from 'react-native';
 import {Colors, DebugInstructions, ReloadInstructions} from 'react-native/Libraries/NewAppScreen';
 import RecommendAppView from './RecommendAppView';
+import MobileApp from './MobileApp';
 
 class RecommendView extends React.Component {
 
@@ -15,15 +16,15 @@ class RecommendView extends React.Component {
             .then((response) => response.json())
             .then((responseJson) => {
 
-                let idAry = [];
+                let appAry = [];
 
-                for (item in responseJson.feed.entry) {
-                    idAry.push(responseJson.feed.entry[item]['id'].attributes['im:id']);
+                for (let item in responseJson.feed.entry) {
+                    appAry.push(new MobileApp(responseJson.feed.entry[item]))
                 }
 
                 this.setState({
                     isLoading: false,
-                    dataSource: responseJson.feed.entry,
+                    dataSource: appAry,
                 }, function () {
                 });
 
@@ -31,16 +32,6 @@ class RecommendView extends React.Component {
             .catch((error) => {
                 console.error(error);
             });
-    }
-
-    filterApps(item){
-        const { searchText } = this.props;
-
-        if (searchText) {
-            let name = item["im:name"].label.toLocaleLowerCase()
-            return name.includes(searchText.toLocaleLowerCase());
-        }
-        return true
     }
 
     render() {
@@ -57,13 +48,12 @@ class RecommendView extends React.Component {
                 <Text>Recommend</Text>
                 <FlatList
                     style={{backgroundColor: Colors.white}}
-                    data={this.state.dataSource.filter(item => this.filterApps(item))}
+                    data={this.state.dataSource.filter(item => item.filter(this.props.searchText) )}
                     renderItem={({item, index}) =>
                         <RecommendAppView
                             appInfo={item}
                             index={index}
                         />
-
                     }
                     horizontal={true}
                     keyExtractor={({id}, index) => id}
