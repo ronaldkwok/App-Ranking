@@ -2,12 +2,13 @@ import React from 'react';
 import {SafeAreaView, ScrollView, ActivityIndicator, FlatList, StyleSheet, Text, View, Image} from 'react-native';
 import {Colors, DebugInstructions, ReloadInstructions} from 'react-native/Libraries/NewAppScreen';
 import ListingAppView from './ListingAppView';
+import RecommendView from './RecommendView';
 
 class ListingView extends React.Component {
 
     constructor(props){
         super(props);
-        this.state ={ isLoading: true}
+        this.state ={ isLoading: true }
     }
 
     componentDidMount(){
@@ -23,7 +24,7 @@ class ListingView extends React.Component {
 
                 this.setState({
                     isLoading: false,
-                    dataSource: idAry,
+                    dataSource: responseJson.feed.entry,
                 }, function(){
                 });
 
@@ -31,6 +32,16 @@ class ListingView extends React.Component {
             .catch((error) =>{
                 console.error(error);
             });
+    }
+
+    filterApps(item){
+        const { searchText } = this.props;
+
+        if (searchText) {
+            let name = item["im:name"].label.toLocaleLowerCase()
+            return name.includes(searchText.toLocaleLowerCase());
+        }
+        return true
     }
 
     render(){
@@ -44,12 +55,13 @@ class ListingView extends React.Component {
 
         return(
                 <FlatList
+                    ListHeaderComponent={<RecommendView searchText={this.props.searchText}></RecommendView>}
                     style = {{backgroundColor: Colors.white}}
                     contentContainerStyle={{ flexGrow: 1 }}
-                    data={this.state.dataSource}
+                    data={this.state.dataSource.filter(item => this.filterApps(item))}
                     renderItem={({item, index}) =>
                         <ListingAppView
-                            appID={item}
+                            appInfo={item}
                             index={index}
                         />
 

@@ -6,25 +6,25 @@ class ListingAppView extends React.Component {
 
     constructor(props){
         super(props);
-        this.state ={ isLoading: true}
+        this.state ={ isLoading: false}
     }
 
-    componentDidMount(){
-        console.log(this.props.appID)
-        return fetch('https://itunes.apple.com/hk/lookup?id='+this.props.appID)
-            .then((response) => response.json())
-            .then((responseJson) => {
-                this.setState({
-                    isLoading: false,
-                    appDetail: responseJson.results[0],
-                }, function(){
-                });
-
-            })
-            .catch((error) =>{
-                console.error(error);
-            });
-    }
+    // componentDidMount(){
+    //     console.log(this.props.appID)
+    //     return fetch('https://itunes.apple.com/hk/lookup?id='+this.props.appID)
+    //         .then((response) => response.json())
+    //         .then((responseJson) => {
+    //             this.setState({
+    //                 isLoading: false,
+    //                 appDetail: responseJson.results[0],
+    //             }, function(){
+    //             });
+    //
+    //         })
+    //         .catch((error) =>{
+    //             console.error(error);
+    //         });
+    // }
 
     render(){
 
@@ -36,20 +36,20 @@ class ListingAppView extends React.Component {
             )
         }
 
-        let appDetail = this.state.appDetail
+        let appInfo = this.props.appInfo
         return (
             <View style={styles.view}>
                 <View style={{justifyContent: 'center',
                     alignItems: 'center'}}>
                     <Text style={styles.rankingText}>{this.props.index+1}</Text>
                 </View>
-                <Image source={{uri: appDetail.artworkUrl100}}
+                <Image source={{uri: appInfo["im:image"][1].label}}
                        style={ styles.appIconImage}/>
                 <View style={styles.infoView}>
                     <Text ellipsizeMode={"tail"}
                           numberOfLines={1}
-                          style={styles.titleText}>{appDetail.trackCensoredName}</Text>
-                    <Text style={styles.titleText}>{appDetail.primaryGenreName}</Text>
+                          style={styles.titleText}>{appInfo["im:name"].label}</Text>
+                    <Text style={styles.titleText}>{appInfo.category.attributes.label}</Text>
                 </View>
             </View>
         );

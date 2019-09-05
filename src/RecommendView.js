@@ -23,7 +23,7 @@ class RecommendView extends React.Component {
 
                 this.setState({
                     isLoading: false,
-                    dataSource: idAry,
+                    dataSource: responseJson.feed.entry,
                 }, function () {
                 });
 
@@ -31,6 +31,16 @@ class RecommendView extends React.Component {
             .catch((error) => {
                 console.error(error);
             });
+    }
+
+    filterApps(item){
+        const { searchText } = this.props;
+
+        if (searchText) {
+            let name = item["im:name"].label.toLocaleLowerCase()
+            return name.includes(searchText.toLocaleLowerCase());
+        }
+        return true
     }
 
     render() {
@@ -47,10 +57,10 @@ class RecommendView extends React.Component {
                 <Text>Recommend</Text>
                 <FlatList
                     style={{backgroundColor: Colors.white}}
-                    data={this.state.dataSource}
+                    data={this.state.dataSource.filter(item => this.filterApps(item))}
                     renderItem={({item, index}) =>
                         <RecommendAppView
-                            appID={item}
+                            appInfo={item}
                             index={index}
                         />
 

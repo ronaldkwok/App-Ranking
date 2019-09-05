@@ -1,16 +1,32 @@
 import React from 'react';
 import {SafeAreaView, View} from 'react-native';
 import ListingView from './ListingView';
-import RecommendView from './RecommendView';
+import {SearchBar} from 'react-native-elements';
 
+class MainScreen extends React.Component {
+    state = {
+        search: "",
+    };
 
-const MainScreen = () => {
-    return (
-        <SafeAreaView style={{flex: 1}}>
-                <RecommendView/>
-                <ListingView/>
-        </SafeAreaView>
+    updateSearch = search => {
+        this.setState({ search });
+    };
+
+    render() {
+        const { search } = this.state;
+
+        return (
+            <SafeAreaView style={{flex: 1}}>
+
+                <SearchBar lightTheme
+                           round
+                           onChangeText={this.updateSearch}
+                           value={search}
+                />
+                <ListingView searchText={search}/>
+            </SafeAreaView>
         );
+    }
 };
 
 export default MainScreen;

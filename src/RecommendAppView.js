@@ -6,28 +6,27 @@ class RecommendAppView extends React.Component {
 
     constructor(props){
         super(props);
-        this.state ={ isLoading: true}
+        this.state ={ isLoading: false}
     }
 
-    componentDidMount(){
-        console.log(this.props.appID)
-        return fetch('https://itunes.apple.com/hk/lookup?id='+this.props.appID)
-            .then((response) => response.json())
-            .then((responseJson) => {
-                this.setState({
-                    isLoading: false,
-                    appDetail: responseJson.results[0],
-                }, function(){
-                });
-
-            })
-            .catch((error) =>{
-                console.error(error);
-            });
-    }
+    // componentDidMount(){
+    //     console.log(this.props.appID)
+    //     return fetch('https://itunes.apple.com/hk/lookup?id='+this.props.appID)
+    //         .then((response) => response.json())
+    //         .then((responseJson) => {
+    //             this.setState({
+    //                 isLoading: false,
+    //                 appDetail: responseJson.results[0],
+    //             }, function(){
+    //             });
+    //
+    //         })
+    //         .catch((error) =>{
+    //             console.error(error);
+    //         });
+    // }
 
     render(){
-
         if(this.state.isLoading){
             return(
                 <View style={{flex: 1, padding: 20}}>
@@ -36,15 +35,15 @@ class RecommendAppView extends React.Component {
             )
         }
 
-        let appDetail = this.state.appDetail
+        let appInfo = this.props.appInfo
         return (
             <View style={styles.view}>
-                <Image source={{uri: appDetail.artworkUrl100}}
+                <Image source={{uri: appInfo["im:image"][1].label}}
                        style={ styles.appIconImage}/>
                     <Text ellipsizeMode={"tail"}
                           numberOfLines={2}
-                          style={styles.titleText}>{appDetail.trackCensoredName}</Text>
-                    <Text style={styles.titleText}>{appDetail.primaryGenreName}</Text>
+                          style={styles.titleText}>{appInfo["im:name"].label}</Text>
+                    <Text style={styles.titleText}>{appInfo.category.attributes.label}</Text>
             </View>
         );
     }
