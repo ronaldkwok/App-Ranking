@@ -1,6 +1,6 @@
 import React from 'react';
 import {SafeAreaView} from 'react-native';
-import ListingView from './ListingView';
+import ListingView from './view/ListingView';
 import {SearchBar} from 'react-native-elements';
 
 class MainScreen extends React.Component {

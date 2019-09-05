@@ -2,10 +2,16 @@ import React from 'react';
 import {ActivityIndicator, StyleSheet, Text, View} from 'react-native';
 import {Colors} from 'react-native/Libraries/NewAppScreen';
 import AppIconImageView from './AppIconImageView';
+import MobileApp from '../model/MobileApp';
 
-class RecommendAppView extends React.Component {
+type Props = {
+    appInfo: MobileApp,
+};
 
-    constructor(props) {
+class RecommendAppView extends React.Component<Props> {
+
+
+    constructor(props: Props) {
         super(props);
         this.state = {isLoading: false};
     }
@@ -44,7 +50,7 @@ class RecommendAppView extends React.Component {
                 <Text ellipsizeMode={'tail'}
                       numberOfLines={2}
                       style={styles.titleText}>{appInfo.name}</Text>
-                <Text style={styles.titleText}>{appInfo.category}</Text>
+                <Text style={styles.categoryText}>{appInfo.category}</Text>
             </View>
         );
     }
@@ -52,10 +58,13 @@ class RecommendAppView extends React.Component {
 
 const styles = StyleSheet.create({
     view: {
-        padding: 5,
+        paddingHorizontal: 10,
+        paddingTop: 5,
+        paddingBottom: 25,
         borderBottomWidth: 1,
         borderBottomColor: Colors.light,
-        width: 120,
+        width: 90,
+
     },
     infoView: {
         padding: 5,
@@ -69,8 +78,14 @@ const styles = StyleSheet.create({
         width: 45,
     },
     titleText: {
-        fontSize: 15,
+        fontSize: 12,
     },
+    categoryText: {
+        fontSize: 12,
+        paddingTop: 5,
+        color: Colors.dark,
+        textAlign: 'left',
+    }
 });
 
 export default RecommendAppView;

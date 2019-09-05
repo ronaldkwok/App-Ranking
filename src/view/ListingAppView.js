@@ -2,30 +2,19 @@ import React from 'react';
 import {ActivityIndicator, Image, StyleSheet, Text, View} from 'react-native';
 import {Colors} from 'react-native/Libraries/NewAppScreen';
 import AppIconImageView from './AppIconImageView';
+import MobileApp from '../model/MobileApp';
 
-class ListingAppView extends React.Component {
+type Props = {
+    appInfo: MobileApp,
+    index: number,
+};
 
-    constructor(props) {
+class ListingAppView extends React.Component<Props> {
+
+    constructor(props: Props) {
         super(props);
         this.state = {isLoading: false};
     }
-
-    // componentDidMount(){
-    //     console.log(this.props.appID)
-    //     return fetch('https://itunes.apple.com/hk/lookup?id='+this.props.appID)
-    //         .then((response) => response.json())
-    //         .then((responseJson) => {
-    //             this.setState({
-    //                 isLoading: false,
-    //                 appDetail: responseJson.results[0],
-    //             }, function(){
-    //             });
-    //
-    //         })
-    //         .catch((error) =>{
-    //             console.error(error);
-    //         });
-    // }
 
     render() {
         if (this.state.isLoading) {
@@ -36,6 +25,7 @@ class ListingAppView extends React.Component {
             );
         }
         const {appInfo, index} = this.props;
+
         return (
             <View style={styles.view}>
                 <View style={{
@@ -49,7 +39,7 @@ class ListingAppView extends React.Component {
                     <Text ellipsizeMode={'tail'}
                           numberOfLines={1}
                           style={styles.titleText}>{appInfo.name}</Text>
-                    <Text style={styles.titleText}>{appInfo.category}</Text>
+                    <Text style={styles.categoryText}>{appInfo.category}</Text>
                 </View>
             </View>
         );
@@ -64,7 +54,8 @@ const styles = StyleSheet.create({
         borderBottomColor: Colors.light,
     },
     infoView: {
-        padding: 5,
+        paddingVertical: 5,
+        paddingHorizontal: 10,
         flex: 1,
         flexDirection: 'column',
     },
@@ -77,6 +68,11 @@ const styles = StyleSheet.create({
     titleText: {
         fontSize: 15,
     },
+    categoryText: {
+        fontSize: 12,
+        paddingTop: 10,
+        color: Colors.dark
+    }
 });
 
 export default ListingAppView;

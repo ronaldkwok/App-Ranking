@@ -2,9 +2,13 @@ import React from 'react';
 import {ActivityIndicator, FlatList, Text, View} from 'react-native';
 import {Colors} from 'react-native/Libraries/NewAppScreen';
 import RecommendAppView from './RecommendAppView';
-import MobileApp from './MobileApp';
+import MobileApp from '../model/MobileApp';
 
-class RecommendView extends React.Component {
+type Props = {
+    searchText: String,
+};
+
+class RecommendView extends React.Component<Props> {
 
     constructor(props) {
         super(props);
@@ -15,10 +19,7 @@ class RecommendView extends React.Component {
         return fetch('https://itunes.apple.com/hk/rss/topgrossingapplications/limit=10/json')
             .then((response) => response.json())
             .then((responseJson) => {
-                let appAry = [];
-                for (let item in responseJson.feed.entry) {
-                    appAry.push(new MobileApp(responseJson.feed.entry[item]));
-                }
+                let appAry = responseJson.feed.entry.map(item => new MobileApp(item));
                 this.setState({
                     isLoading: false,
                     dataSource: appAry,

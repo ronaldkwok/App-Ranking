@@ -3,13 +3,17 @@ import {ActivityIndicator, FlatList, View} from 'react-native';
 import {Colors} from 'react-native/Libraries/NewAppScreen';
 import ListingAppView from './ListingAppView';
 import RecommendView from './RecommendView';
-import MobileApp from './MobileApp';
+import MobileApp from '../model/MobileApp';
 
-class ListingView extends React.Component {
+type Props = {
+    searchText: String,
+};
+
+class ListingView extends React.Component<Props> {
 
     constructor(props) {
         super(props);
-        this.state = {isLoading: true};
+        this.state = {isLoading: true, page: 1, isRefreshing: false};
     }
 
     componentDidMount() {
@@ -17,15 +21,13 @@ class ListingView extends React.Component {
             .then((response) => response.json())
             .then((responseJson) => {
 
-                let appAry = [];
-
-                for (let item in responseJson.feed.entry) {
-                    appAry.push(new MobileApp(responseJson.feed.entry[item]));
-                }
+                console.log("api did call")
+                let appAry = responseJson.feed.entry.map(item => new MobileApp(item));
 
                 this.setState({
                     isLoading: false,
                     dataSource: appAry,
+                    displaySource: appAry.slice(0,10)
                 }, function () {
                 });
 
@@ -34,6 +36,25 @@ class ListingView extends React.Component {
                 console.error(error);
             });
     }
+
+    handleLoadMore = () => {
+        if (this.state.displaySource.length >= this.state.dataSource.length || this.state.isRefreshing) {
+            return
+        }
+
+        console.log("Start reload")
+
+        this.setState( {isRefreshing: true})
+
+        let appPerPage = 10;
+        let currentPage = this.state.page;
+
+        this.setState({
+            isRefreshing: false,
+            page: this.state.page + 1,
+            displaySource: [...this.state.displaySource, ...this.state.dataSource.slice(currentPage*appPerPage,currentPage*appPerPage + 10)]
+        });
+    };
 
     render() {
         if (this.state.isLoading) {
@@ -49,53 +70,17 @@ class ListingView extends React.Component {
                 ListHeaderComponent={<RecommendView searchText={this.props.searchText}/>}
                 style={{backgroundColor: Colors.white}}
                 contentContainerStyle={{flexGrow: 1}}
-                data={this.state.dataSource.filter(item => item.filter(this.props.searchText))}
+                data={this.state.displaySource.filter(item => item.filter(this.props.searchText))}
                 renderItem={({item, index}) => <ListingAppView index={index} appInfo={item}/>}
                 keyExtractor={(item, index) => item.appID.toString()}
+                onEndReached={this.handleLoadMore}
+                onEndReachedThreshold={0.5}
                 initialNumToRender={10}
             />
+
         );
     }
 }
-
-// const styles = StyleSheet.create({
-//     scrollView: {
-//         backgroundColor: Colors.white,
-//     },
-//     engine: {
-//         position: 'absolute',
-//         right: 0,
-//     },
-//     body: {
-//         backgroundColor: Colors.white,
-//     },
-//     sectionContainer: {
-//         marginTop: 32,
-//         paddingHorizontal: 24,
-//     },
-//     sectionTitle: {
-//         fontSize: 24,
-//         fontWeight: '600',
-//         color: Colors.black,
-//     },
-//     sectionDescription: {
-//         marginTop: 8,
-//         fontSize: 18,
-//         fontWeight: '400',
-//         color: Colors.dark,
-//     },
-//     highlight: {
-//         fontWeight: '700',
-//     },
-//     footer: {
-//         color: Colors.dark,
-//         fontSize: 12,
-//         fontWeight: '600',
-//         padding: 4,
-//         paddingRight: 12,
-//         textAlign: 'right',
-//     },
-// });
 
 export default ListingView;
 
