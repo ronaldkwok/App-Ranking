@@ -10,28 +10,10 @@ type Props = {
 
 class RecommendAppView extends React.Component<Props> {
 
-
     constructor(props: Props) {
         super(props);
         this.state = {isLoading: false};
     }
-
-    // componentDidMount(){
-    //     console.log(this.props.appID)
-    //     return fetch('https://itunes.apple.com/hk/lookup?id='+this.props.appID)
-    //         .then((response) => response.json())
-    //         .then((responseJson) => {
-    //             this.setState({
-    //                 isLoading: false,
-    //                 appDetail: responseJson.results[0],
-    //             }, function(){
-    //             });
-    //
-    //         })
-    //         .catch((error) =>{
-    //             console.error(error);
-    //         });
-    // }
 
     render() {
         if (this.state.isLoading) {
