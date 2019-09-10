@@ -1,8 +1,9 @@
 import React from 'react';
-import {ActivityIndicator, FlatList, Text, View} from 'react-native';
+import {ActivityIndicator, FlatList, StyleSheet, Text, View} from 'react-native';
 import {Colors} from 'react-native/Libraries/NewAppScreen';
 import RecommendAppView from './RecommendAppView';
 import MobileApp from '../model/MobileApp';
+import NetworkHelper from '../NetworkHelper';
 
 type Props = {
     searchText: String,
@@ -16,19 +17,18 @@ class RecommendView extends React.Component<Props> {
     }
 
     componentDidMount() {
-        return fetch('https://itunes.apple.com/hk/rss/topgrossingapplications/limit=10/json')
-            .then((response) => response.json())
-            .then((responseJson) => {
-                let appAry = responseJson.feed.entry.map(item => new MobileApp(item));
+
+        return NetworkHelper.getRecommendApps()
+            .then((mobileApps: [MobileApp]) => {
                 this.setState({
                     isLoading: false,
-                    dataSource: appAry,
-                }, function () {
+                    dataSource: mobileApps,
                 });
             })
             .catch((error) => {
                 console.error(error);
             });
+
     }
 
     render() {
@@ -42,7 +42,7 @@ class RecommendView extends React.Component<Props> {
 
         return (
             <View>
-                <Text>Recommend</Text>
+                <Text style={styles.recommendText}>推介</Text>
                 <FlatList
                     style={{backgroundColor: Colors.white}}
                     data={this.state.dataSource.filter(item => item.filter(this.props.searchText))}
@@ -55,6 +55,14 @@ class RecommendView extends React.Component<Props> {
         );
     }
 }
+
+const styles = StyleSheet.create({
+    recommendText: {
+        padding: 10,
+        fontSize: 20,
+        fontWeight: 'bold',
+    },
+});
 
 export default RecommendView;
 
