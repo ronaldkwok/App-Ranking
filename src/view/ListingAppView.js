@@ -35,10 +35,12 @@ class ListingAppView extends React.Component<Props> {
                     isLoading: false,
                 }, function () {
                     this.props.onUpdateAppInfo(this.props.appInfo);
-                }).catch((error) => {
-                    console.error(error);
                 });
+            })
+            .catch((error) => {
+                console.error(error);
             });
+        ;
 
     }
 
