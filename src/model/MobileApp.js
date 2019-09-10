@@ -22,10 +22,10 @@ export default class MobileApp {
         this.ratingCount = json.results[0].userRatingCount;
     }
 
-    filter(searchText) {
-        if (searchText) {
-            return this.name.toLocaleLowerCase().includes(searchText.toLocaleLowerCase());
-        }
-        return true;
+    filter(searchText: string) {
+        const query = searchText.toLowerCase();
+        const {name, summary, artist, category} = this;
+
+        return name.toLowerCase().includes(query) || summary.toLowerCase().includes(query) || artist.toLowerCase().includes(query) || category.toLowerCase().includes(query);
     }
 }

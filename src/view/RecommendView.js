@@ -11,24 +11,36 @@ type Props = {
 
 class RecommendView extends React.Component<Props> {
 
+    dataSource: [MobileApp] = [];
+
     constructor(props) {
         super(props);
         this.state = {isLoading: true};
     }
 
-    componentDidMount() {
+    shouldComponentUpdate(nextProps: Readonly<Props>, nextState: Readonly<S>, nextContext: any): boolean {
+        if (this.props.searchText !== nextProps.searchText) {
+            this.setState({
+                displaySource: this.dataSource.filter(item => item.filter(nextProps.searchText)),
+            });
 
+            return false;
+        }
+        return true;
+    }
+
+    componentDidMount() {
         return NetworkHelper.getRecommendApps()
             .then((mobileApps: [MobileApp]) => {
+                this.dataSource = mobileApps;
                 this.setState({
                     isLoading: false,
-                    dataSource: mobileApps,
+                    displaySource: mobileApps,
                 });
             })
             .catch((error) => {
                 console.error(error);
             });
-
     }
 
     render() {
@@ -42,10 +54,14 @@ class RecommendView extends React.Component<Props> {
 
         return (
             <View>
-                <Text style={styles.recommendText}>推介</Text>
+                {this.state.displaySource.length ? <Text style={styles.recommendText}>推介</Text> : null}
                 <FlatList
-                    style={{backgroundColor: Colors.white}}
-                    data={this.state.dataSource.filter(item => item.filter(this.props.searchText))}
+                    style={{
+                        backgroundColor: Colors.white,
+                        borderBottomWidth: 1,
+                        borderBottomColor: Colors.light,
+                    }}
+                    data={this.state.displaySource}
                     renderItem={({item, index}) => <RecommendAppView appInfo={item}/>}
                     horizontal={true}
                     keyExtractor={(item, index) => item.appID.toString()}

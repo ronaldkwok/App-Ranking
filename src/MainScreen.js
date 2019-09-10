@@ -17,7 +17,6 @@ class MainScreen extends React.Component {
 
         return (
             <SafeAreaView style={{flex: 1}}>
-
                 <SearchBar lightTheme
                            round
                            onChangeText={this.updateSearch}
@@ -27,6 +26,6 @@ class MainScreen extends React.Component {
             </SafeAreaView>
         );
     }
-};
+}
 
 export default MainScreen;

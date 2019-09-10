@@ -8,7 +8,11 @@ type Props = {
     appInfo: MobileApp,
 };
 
-class RecommendAppView extends React.Component<Props> {
+type State = {
+    isLoading: boolean
+};
+
+class RecommendAppView extends React.Component<Props, State> {
 
     constructor(props: Props) {
         super(props);
@@ -43,8 +47,6 @@ const styles = StyleSheet.create({
         paddingHorizontal: 10,
         paddingTop: 5,
         paddingBottom: 25,
-        borderBottomWidth: 1,
-        borderBottomColor: Colors.light,
         width: 90,
 
     },
@@ -67,7 +69,7 @@ const styles = StyleSheet.create({
         paddingTop: 5,
         color: Colors.dark,
         textAlign: 'left',
-    }
+    },
 });
 
 export default RecommendAppView;

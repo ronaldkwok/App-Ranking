@@ -1,10 +1,11 @@
 import React from 'react';
-import {ActivityIndicator, FlatList, View} from 'react-native';
+import {ActivityIndicator, FlatList, View, Text} from 'react-native';
 import {Colors} from 'react-native/Libraries/NewAppScreen';
 import ListingAppView from './ListingAppView';
 import RecommendView from './RecommendView';
 import MobileApp from '../model/MobileApp';
 import NetworkHelper from '../NetworkHelper';
+import debounce from 'lodash';
 
 type Props = {
     searchText: string,
@@ -20,76 +21,86 @@ class ListingView extends React.Component<Props> {
         this.state = {isLoading: true, page: 0, isRefreshing: false, displaySource: []};
     }
 
-    componentDidUpdate(prevProps: Readonly<Props>) {
-        if (this.props.searchText != prevProps.searchText) {
-
-            if (this.props.searchText) {
-                this.displayDataSource = this.dataSource.filter(item => item.filter(this.props.searchText));
+    shouldComponentUpdate(nextProps: Readonly<Props>, nextState: Readonly<S>, nextContext: any): boolean {
+        if (this.props.searchText !== nextProps.searchText) {
+            if (nextProps.searchText) {
+                this.displayDataSource = this.dataSource.filter(item => item.filter(nextProps.searchText));
             } else {
                 this.displayDataSource = this.dataSource;
             }
 
-            this.flatListRef.scrollToOffset({animated: false, offset: 0});
-            this.setState({
-                page: 0,
-                displaySource: [],
-                isRefreshing: false,
-            }, this.handleLoadMore);
+            this.handleInitDisplay();
+            return false;
         }
+        return true;
+    }
+
+    componentDidUpdate(prevProps: Readonly<Props>) {
     }
 
     componentDidMount() {
-        return NetworkHelper.getTopFreeApps()
+        return this.handleGetAppData();
+    }
+
+    handleGetAppData() {
+        NetworkHelper.getTopFreeApps()
             .then((mobileApps: [MobileApp]) => {
-                console.log('api did call');
                 this.dataSource = mobileApps;
                 this.displayDataSource = this.dataSource;
-
-                this.setState({
-                    isLoading: false,
-                }, this.handleLoadMore);
-
+                this.handleInitDisplay();
             }).catch((error) => {
-                console.error(error);
-            });
+            console.error(error);
+        });
+    }
+
+    handleInitDisplay() {
+        this.setState({
+            isLoading: false,
+            page: 1,
+            displaySource: this.displayDataSource.slice(0, 10),
+            isRefreshing: false,
+        }, () => {
+            this.flatListRef.scrollToOffset({animated: false, offset: 0});
+        });
     }
 
     handleLoadMore = () => {
-        console.log('enter reload');
+        let time = (new Date()).getTime() - this.time;
+        if (time < 500) {
+            return;
+        }
+        this.time = (new Date()).getTime();
 
-        if (this.state.displaySource.length >= this.displayDataSource.length || this.state.isRefreshing) {
+        if (this.state.displaySource.length >= this.displayDataSource.length || this.state.onMomentumScrollEnd) {
             return;
         }
 
-        console.log('Start reload');
-
-        this.setState({isRefreshing: true});
+        this.setState({onMomentumScrollEnd: true});
 
         let appPerPage = 10;
         let currentPage = this.state.page;
 
         this.setState({
             page: this.state.page + 1,
-            displaySource: [...this.state.displaySource, ...this.displayDataSource.slice(currentPage * appPerPage, currentPage * appPerPage + 10)],
+            displaySource: [...this.state.displaySource, ...this.displayDataSource.slice(currentPage * appPerPage, (currentPage + 1) * appPerPage)],
         }, () => {
-            this.setState({isRefreshing: false});
+            this.setState({onMomentumScrollEnd: false});
         });
     };
 
     handleUpdateAppInfo = (appInfo: MobileApp) => {
-        console.log('Update app');
-        let objIndex = this.dataSource.findIndex((obj => obj.appID == appInfo.appID));
+        let objIndex = this.dataSource.findIndex((obj => obj.appID === appInfo.appID));
         if (this.dataSource.length > objIndex) {
             this.dataSource[objIndex] = appInfo;
         }
     };
 
     handleRefresh = () => {
-        console.log('Pull to refresh');
         this.setState({
-            page: 0,
-            displaySource: [],
-        }, this.handleLoadMore);
+            isRefreshing: true,
+        }, () => {
+            this.handleGetAppData();
+        });
     };
 
     render() {
@@ -107,8 +118,6 @@ class ListingView extends React.Component<Props> {
                 ref={(ref) => {
                     this.flatListRef = ref;
                 }}
-                style={{backgroundColor: Colors.white}}
-                contentContainerStyle={{flexGrow: 1}}
                 data={this.state.displaySource}
                 renderItem={({item, index}) =>
                     <ListingAppView index={index}
@@ -118,7 +127,10 @@ class ListingView extends React.Component<Props> {
                 refreshing={this.state.isRefreshing}
                 onRefresh={this.handleRefresh}
                 onEndReached={this.handleLoadMore}
-                onEndReachedThreshold={1}
+                onEndReachedThreshold={0.01}
+                onMomentumScrollBegin={() => {
+                    this.state.onMomentumScrollEnd = false;
+                }}
             />
 
         );
@@ -126,4 +138,3 @@ class ListingView extends React.Component<Props> {
 }
 
 export default ListingView;
-

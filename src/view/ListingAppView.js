@@ -1,5 +1,5 @@
 import React from 'react';
-import {ActivityIndicator, Image, StyleSheet, Text, View} from 'react-native';
+import {ActivityIndicator, StyleSheet, Text, View} from 'react-native';
 import {Colors} from 'react-native/Libraries/NewAppScreen';
 import AppIconImageView from './AppIconImageView';
 import MobileApp from '../model/MobileApp';
@@ -12,7 +12,11 @@ type Props = {
     onUpdateAppInfo: (appInfo: MobileApp) => void
 };
 
-class ListingAppView extends React.Component<Props> {
+type State = {
+    isLoading: boolean
+};
+
+class ListingAppView extends React.Component<Props, State> {
 
     constructor(props: Props) {
         super(props);
@@ -26,8 +30,6 @@ class ListingAppView extends React.Component<Props> {
             });
         }
 
-        console.log('specific api did call', this.props.appInfo);
-
         return NetworkHelper.getAppDetail(this.props.appInfo.appID)
             .then((responseJson) => {
                 this.props.appInfo.updateRating(responseJson);
@@ -40,8 +42,6 @@ class ListingAppView extends React.Component<Props> {
             .catch((error) => {
                 console.error(error);
             });
-        ;
-
     }
 
     render() {
@@ -52,8 +52,8 @@ class ListingAppView extends React.Component<Props> {
                 </View>
             );
         }
-        const {appInfo, index} = this.props;
 
+        const {appInfo, index} = this.props;
         return (
             <View style={styles.view}>
                 <View style={{
@@ -79,15 +79,17 @@ class ListingAppView extends React.Component<Props> {
     }
 
     generateStars(appInfo: MobileApp) {
-        const stars = [];
+        let stars = [];
 
-        let starCount = Math.floor(appInfo.starsNumber);
+        const starCount = Math.floor(appInfo.starsNumber);
 
-        for (var i = 0; i < starCount; i++) {
+        let i;
+
+        for (i = 0; i < starCount; i++) {
             stars.push(<Icon name="star" size={10} color="#FC9601" key={i}/>);
         }
 
-        for (var i = starCount; i < 5; i++) {
+        for (i = starCount; i < 5; i++) {
             stars.push(<Icon name="star" size={10} color="#999691" key={i}/>);
         }
 
