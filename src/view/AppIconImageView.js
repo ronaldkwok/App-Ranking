@@ -2,14 +2,14 @@ import React from 'react';
 import {Image, StyleSheet} from 'react-native';
 import {Colors} from 'react-native/Libraries/NewAppScreen';
 
-const AppIconImageView = ({url, round = false}) => {
+const AppIconImageView = ({url, round = false, size = 70}) => {
     return <Image source={{uri: url}}
                   style={{
-                      borderRadius: round? 35:15,
-                      width: 70,
-                      height: 70,
+                      borderRadius: round ? size / 2 : size * 0.2,
+                      width: size,
+                      height: size,
                       borderWidth: 1,
-                      borderColor: Colors.light
+                      borderColor: Colors.light,
                   }}/>;
 };
 
