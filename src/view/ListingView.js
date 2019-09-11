@@ -6,6 +6,7 @@ import RecommendView from './RecommendView';
 import MobileApp from '../model/MobileApp';
 import NetworkHelper from '../NetworkHelper';
 import debounce from 'lodash';
+import EmptyListView from './EmptyListView';
 
 type Props = {
     searchText: string,
@@ -118,6 +119,7 @@ class ListingView extends React.Component<Props> {
                 ref={(ref) => {
                     this.flatListRef = ref;
                 }}
+                contentContainerStyle={{ flexGrow: 1 }}
                 data={this.state.displaySource}
                 renderItem={({item, index}) =>
                     <ListingAppView index={index}
@@ -131,6 +133,7 @@ class ListingView extends React.Component<Props> {
                 onMomentumScrollBegin={() => {
                     this.state.onMomentumScrollEnd = false;
                 }}
+                ListEmptyComponent={<EmptyListView searchText={this.props.searchText}/>}
             />
 
         );
