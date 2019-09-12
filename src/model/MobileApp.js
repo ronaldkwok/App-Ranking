@@ -1,15 +1,15 @@
 export default class MobileApp {
-    appID: Number;
-    name: String;
-    summary: String;
-    artist: String;
-    imageUrl: String;
-    category: String;
-    starsNumber: Number;
-    ratingCount: Number;
+    appID: number;
+    name: string;
+    summary: string;
+    artist: string;
+    imageUrl: string;
+    category: string;
+    starsNumber: number;
+    ratingCount: number;
 
-    constructor(json) {
-        this.appID = json.id.attributes['im:id'];
+    initData(json) {
+        this.appID = Number(json.id.attributes['im:id']);
         this.name = json['im:name'].label;
         this.summary = json.summary.label;
         this.artist = json['im:artist'].label;
@@ -29,3 +29,11 @@ export default class MobileApp {
         return name.toLowerCase().includes(query) || summary.toLowerCase().includes(query) || artist.toLowerCase().includes(query) || category.toLowerCase().includes(query);
     }
 }
+
+MobileApp.schema = {
+    name: 'MobileApp',
+    // primaryKey: 'appID',
+    properties: {
+        appID: 'int',
+    },
+};

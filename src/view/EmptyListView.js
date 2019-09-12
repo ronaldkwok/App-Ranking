@@ -1,6 +1,5 @@
 import React from 'react';
 import { Text, View, StyleSheet } from 'react-native';
-import {Colors} from 'react-native/Libraries/NewAppScreen';
 
 const EmptyListView = ({ searchText }) => {
     return (
