@@ -1,11 +1,11 @@
 import React from 'react';
 import {ActivityIndicator, StyleSheet, Text, View} from 'react-native';
-import Colors from '../Colors';
+import Colors from '../common/Colors';
 import AppIconImageView from './AppIconImageView';
 import MobileApp from '../model/MobileApp';
 import Icon from 'react-native-vector-icons/Entypo';
-import NetworkHelper from '../NetworkHelper';
-import StorageHelper from '../StorageHelper';
+import NetworkHelper from '../services/NetworkHelper';
+import StorageHelper from '../services/StorageHelper';
 
 type Props = {
     appInfo: MobileApp,

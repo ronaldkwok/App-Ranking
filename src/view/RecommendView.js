@@ -1,10 +1,10 @@
 import React from 'react';
 import {ActivityIndicator, FlatList, StyleSheet, Text, View} from 'react-native';
-import Colors from '../Colors';
+import Colors from '../common/Colors';
 import RecommendAppView from './RecommendAppView';
 import MobileApp from '../model/MobileApp';
-import NetworkHelper from '../NetworkHelper';
-import StorageHelper from '../StorageHelper';
+import NetworkHelper from '../services/NetworkHelper';
+import StorageHelper from '../services/StorageHelper';
 
 type Props = {
     searchText: String,

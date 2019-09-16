@@ -3,9 +3,9 @@ import {ActivityIndicator, FlatList, View, Alert} from 'react-native';
 import ListingAppView from './ListingAppView';
 import RecommendView from './RecommendView';
 import MobileApp from '../model/MobileApp';
-import NetworkHelper from '../NetworkHelper';
+import NetworkHelper from '../services/NetworkHelper';
 import EmptyListView from './EmptyListView';
-import StorageHelper from '../StorageHelper';
+import StorageHelper from '../services/StorageHelper';
 
 type Props = {
     searchText: string,

@@ -1,4 +1,4 @@
-import MobileApp from './model/MobileApp';
+import MobileApp from '../model/MobileApp';
 import StorageHelper from './StorageHelper';
 
 function getTopFreeApps(count: number = 100) {

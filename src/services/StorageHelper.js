@@ -1,4 +1,4 @@
-import MobileApp from './model/MobileApp';
+import MobileApp from '../model/MobileApp';
 import Realm from 'realm';
 
 function storeRankingApps(apps: [MobileApp]) {

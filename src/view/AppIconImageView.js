@@ -1,6 +1,6 @@
 import React from 'react';
 import {Image} from 'react-native';
-import Colors from '../Colors';
+import Colors from '../common/Colors';
 
 const AppIconImageView = ({url, round = false, size = 70}) => {
     return <Image source={{uri: url}}
