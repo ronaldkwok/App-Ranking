@@ -1,5 +1,4 @@
 import MobileApp from './model/MobileApp';
-import Realm from 'realm';
 import StorageHelper from './StorageHelper';
 
 function getTopFreeApps(count: number = 100) {

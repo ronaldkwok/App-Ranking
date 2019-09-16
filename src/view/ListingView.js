@@ -11,7 +11,15 @@ type Props = {
     searchText: string,
 };
 
-class ListingView extends React.Component<Props> {
+type State = {
+    isLoading: boolean,
+    page: number,
+    isRefreshing: boolean,
+    displaySource: [MobileApp],
+    onMomentumScrollEnd: boolean
+}
+
+class ListingView extends React.Component<Props, State> {
 
     dataSource: [MobileApp] = [];
     displayDataSource: [MobileApp] = [];
@@ -21,7 +29,7 @@ class ListingView extends React.Component<Props> {
         this.state = {isLoading: true, page: 0, isRefreshing: false, displaySource: []};
     }
 
-    shouldComponentUpdate(nextProps: Readonly<Props>, nextState: Readonly<S>, nextContext: any): boolean {
+    shouldComponentUpdate(nextProps: Readonly<Props>, nextState: Readonly<State>, nextContext: any): boolean {
         if (this.props.searchText !== nextProps.searchText) {
             if (nextProps.searchText) {
                 this.displayDataSource = this.dataSource.filter(item => item.filter(nextProps.searchText));
@@ -46,7 +54,7 @@ class ListingView extends React.Component<Props> {
                 this.displayDataSource = this.dataSource;
                 this.handleInitDisplay();
             })
-            .catch((error) => {
+            .catch(() => {
                 Alert.alert(
                     'Error',
                     'Error occur',
@@ -103,7 +111,6 @@ class ListingView extends React.Component<Props> {
     };
 
     handleRefresh = () => {
-        this.flatListRef.header
         this.setState({
             isRefreshing: true,
             displaySource: [],
@@ -139,7 +146,7 @@ class ListingView extends React.Component<Props> {
                 onEndReached={this.handleLoadMore}
                 onEndReachedThreshold={0.01}
                 onMomentumScrollBegin={() => {
-                    this.state.onMomentumScrollEnd = false;
+                    this.setState({onMomentumScrollEnd: false});
                 }}
                 ListEmptyComponent={<EmptyListView searchText={this.props.searchText}/>}
             />

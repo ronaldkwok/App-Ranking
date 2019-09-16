@@ -1,25 +1,29 @@
 import React from 'react';
 import {ActivityIndicator, FlatList, StyleSheet, Text, View} from 'react-native';
-import {Colors} from 'react-native/Libraries/NewAppScreen';
+import Colors from '../Colors';
 import RecommendAppView from './RecommendAppView';
 import MobileApp from '../model/MobileApp';
 import NetworkHelper from '../NetworkHelper';
 
 type Props = {
     searchText: String,
-    refresh: boolean,
 };
 
-class RecommendView extends React.Component<Props> {
+type State = {
+    isLoading: boolean,
+    displaySource: [MobileApp]
+};
+
+class RecommendView extends React.Component<Props, State> {
 
     dataSource: [MobileApp] = [];
 
     constructor(props) {
         super(props);
-        this.state = {isLoading: true};
+        this.state = {isLoading: true, displaySource:[]};
     }
 
-    shouldComponentUpdate(nextProps: Readonly<Props>, nextState: Readonly<S>, nextContext: any): boolean {
+    shouldComponentUpdate(nextProps: Readonly<Props>, nextState: Readonly<State>, nextContext: any): boolean {
         if (this.props.searchText !== nextProps.searchText) {
             this.setState({
                 displaySource: this.dataSource.filter(item => item.filter(nextProps.searchText)),
@@ -63,9 +67,9 @@ class RecommendView extends React.Component<Props> {
                         borderBottomColor: Colors.light,
                     }}
                     data={this.state.displaySource}
-                    renderItem={({item, index}) => <RecommendAppView appInfo={item}/>}
+                    renderItem={({item, _}) => <RecommendAppView appInfo={item}/>}
                     horizontal={true}
-                    keyExtractor={(item, index) => item.appID.toString()}
+                    keyExtractor={(item, _) => item.appID.toString()}
                     initialNumToRender={10}
                 />
             </View>

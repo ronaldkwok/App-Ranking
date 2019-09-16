@@ -1,6 +1,6 @@
 import React from 'react';
 import {ActivityIndicator, StyleSheet, Text, View} from 'react-native';
-import {Colors} from 'react-native/Libraries/NewAppScreen';
+import Colors from '../Colors';
 import AppIconImageView from './AppIconImageView';
 import MobileApp from '../model/MobileApp';
 import Icon from 'react-native-vector-icons/Entypo';
@@ -88,11 +88,11 @@ class ListingAppView extends React.Component<Props, State> {
         let i;
 
         for (i = 0; i < starCount; i++) {
-            stars.push(<Icon name="star" size={10} color="#FC9601" key={i}/>);
+            stars.push(<Icon name="star" size={10} color={Colors.yellow} key={i}/>);
         }
 
         for (i = starCount; i < 5; i++) {
-            stars.push(<Icon name="star" size={10} color="#999691" key={i}/>);
+            stars.push(<Icon name="star" size={10} color={Colors.light} key={i}/>);
         }
 
         return stars;
