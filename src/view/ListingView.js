@@ -1,12 +1,11 @@
 import React from 'react';
-import {ActivityIndicator, FlatList, View, Text} from 'react-native';
-import {Colors} from 'react-native/Libraries/NewAppScreen';
+import {ActivityIndicator, FlatList, View, Alert} from 'react-native';
 import ListingAppView from './ListingAppView';
 import RecommendView from './RecommendView';
 import MobileApp from '../model/MobileApp';
 import NetworkHelper from '../NetworkHelper';
-import debounce from 'lodash';
 import EmptyListView from './EmptyListView';
+import StorageHelper from '../StorageHelper';
 
 type Props = {
     searchText: string,
@@ -36,11 +35,8 @@ class ListingView extends React.Component<Props> {
         return true;
     }
 
-    componentDidUpdate(prevProps: Readonly<Props>) {
-    }
-
     componentDidMount() {
-        return this.handleGetAppData();
+        this.handleGetAppData();
     }
 
     handleGetAppData() {
@@ -49,9 +45,23 @@ class ListingView extends React.Component<Props> {
                 this.dataSource = mobileApps;
                 this.displayDataSource = this.dataSource;
                 this.handleInitDisplay();
-            }).catch((error) => {
-            console.error(error);
-        });
+            })
+            .catch((error) => {
+                Alert.alert(
+                    'Error',
+                    'Error occur',
+                    [
+                        {
+                            text: 'OK', onPress: () => {
+                                this.dataSource = StorageHelper.getApps(MobileApp.appType.Ranking);
+                                this.displayDataSource = this.dataSource;
+                                this.handleInitDisplay();
+                            },
+                        },
+                    ],
+                    {cancelable: false},
+                );
+            });
     }
 
     handleInitDisplay() {
@@ -66,10 +76,6 @@ class ListingView extends React.Component<Props> {
     }
 
     handleLoadMore = () => {
-        let time = (new Date()).getTime() - this.time;
-        if (time < 500) {
-            return;
-        }
         this.time = (new Date()).getTime();
 
         if (this.state.displaySource.length >= this.displayDataSource.length || this.state.onMomentumScrollEnd) {
@@ -97,8 +103,10 @@ class ListingView extends React.Component<Props> {
     };
 
     handleRefresh = () => {
+        this.flatListRef.header
         this.setState({
             isRefreshing: true,
+            displaySource: [],
         }, () => {
             this.handleGetAppData();
         });
@@ -119,7 +127,7 @@ class ListingView extends React.Component<Props> {
                 ref={(ref) => {
                     this.flatListRef = ref;
                 }}
-                contentContainerStyle={{ flexGrow: 1 }}
+                contentContainerStyle={{flexGrow: 1}}
                 data={this.state.displaySource}
                 renderItem={({item, index}) =>
                     <ListingAppView index={index}

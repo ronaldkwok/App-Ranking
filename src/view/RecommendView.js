@@ -7,6 +7,7 @@ import NetworkHelper from '../NetworkHelper';
 
 type Props = {
     searchText: String,
+    refresh: boolean,
 };
 
 class RecommendView extends React.Component<Props> {
@@ -30,7 +31,7 @@ class RecommendView extends React.Component<Props> {
     }
 
     componentDidMount() {
-        return NetworkHelper.getRecommendApps()
+        NetworkHelper.getRecommendApps()
             .then((mobileApps: [MobileApp]) => {
                 this.dataSource = mobileApps;
                 this.setState({
@@ -39,7 +40,7 @@ class RecommendView extends React.Component<Props> {
                 });
             })
             .catch((error) => {
-                console.error(error);
+                console.log(error);
             });
     }
 

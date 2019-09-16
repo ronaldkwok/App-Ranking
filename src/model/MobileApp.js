@@ -1,20 +1,25 @@
 export default class MobileApp {
-    appID: number;
-    name: string;
-    summary: string;
-    artist: string;
-    imageUrl: string;
-    category: string;
-    starsNumber: number;
-    ratingCount: number;
 
     initData(json) {
-        this.appID = Number(json.id.attributes['im:id']);
+        this.appID = json.id.attributes['im:id'];
         this.name = json['im:name'].label;
         this.summary = json.summary.label;
         this.artist = json['im:artist'].label;
         this.imageUrl = json['im:image'][1].label;
-        this.category = json.category.attributes.label;
+        this.category = json.category.attributes.term;
+        this.categoryName = json.category.attributes.label;
+    }
+
+    initWithLocalData(realmObject) {
+        this.appID = realmObject.appID;
+        this.name = realmObject.name;
+        this.summary = realmObject.summary;
+        this.artist = realmObject.artist;
+        this.imageUrl = realmObject.imageUrl;
+        this.category = realmObject.category;
+        this.categoryName = realmObject.categoryName;
+        this.starsNumber = realmObject.starsNumber;
+        this.ratingCount = realmObject.ratingCount;
     }
 
     updateRating(json) {
@@ -30,10 +35,26 @@ export default class MobileApp {
     }
 }
 
+MobileApp.appType = {
+    Ranking: 0,
+    Recommend: 1,
+};
+
 MobileApp.schema = {
     name: 'MobileApp',
-    // primaryKey: 'appID',
+    primaryKey: 'appID',
     properties: {
-        appID: 'int',
+        appID: 'string',
+        isRankingApp: {type: 'bool', default: false},
+        isRecommendApp: {type: 'bool', default: false},
+        name: 'string',
+        summary: 'string',
+        artist: 'string',
+        imageUrl: 'string',
+        category: 'string',
+        categoryName: 'string',
+        starsNumber: 'float?',
+        ratingCount: 'float?',
+        ranking: 'int?',
     },
 };

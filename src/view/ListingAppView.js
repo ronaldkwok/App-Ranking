@@ -5,6 +5,7 @@ import AppIconImageView from './AppIconImageView';
 import MobileApp from '../model/MobileApp';
 import Icon from 'react-native-vector-icons/Entypo';
 import NetworkHelper from '../NetworkHelper';
+import StorageHelper from '../StorageHelper';
 
 type Props = {
     appInfo: MobileApp,
@@ -33,6 +34,7 @@ class ListingAppView extends React.Component<Props, State> {
         return NetworkHelper.getAppDetail(this.props.appInfo.appID)
             .then((responseJson) => {
                 this.props.appInfo.updateRating(responseJson);
+                StorageHelper.updateAppInfo(this.props.appInfo);
                 this.setState({
                     isLoading: false,
                 }, function () {
