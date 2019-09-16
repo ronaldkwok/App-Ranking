@@ -31,7 +31,10 @@ export default class MobileApp {
         const query = searchText.toLowerCase();
         const {name, summary, artist, category} = this;
 
-        return name.toLowerCase().includes(query) || summary.toLowerCase().includes(query) || artist.toLowerCase().includes(query) || category.toLowerCase().includes(query);
+        return name.toLowerCase().includes(query) ||
+            summary.toLowerCase().includes(query) ||
+            artist.toLowerCase().includes(query) ||
+            category.toLowerCase().includes(query);
     }
 }
 

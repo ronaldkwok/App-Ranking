@@ -26,9 +26,8 @@ class ListingAppView extends React.Component<Props, State> {
 
     componentDidMount() {
         if (this.props.appInfo.starsNumber) {
-            return this.setState({
-                isLoading: false,
-            });
+            this.setState({isLoading: false});
+            return;
         }
 
         return NetworkHelper.getAppDetail(this.props.appInfo.appID)
@@ -42,7 +41,8 @@ class ListingAppView extends React.Component<Props, State> {
                 });
             })
             .catch((error) => {
-                console.error(error);
+                console.log(error);
+                this.setState({isLoading: false});
             });
     }
 

@@ -16,7 +16,6 @@ type State = {
     page: number,
     isRefreshing: boolean,
     displaySource: [MobileApp],
-    onMomentumScrollEnd: boolean
 }
 
 class ListingView extends React.Component<Props, State> {
@@ -84,13 +83,9 @@ class ListingView extends React.Component<Props, State> {
     }
 
     handleLoadMore = () => {
-        this.time = (new Date()).getTime();
-
-        if (this.state.displaySource.length >= this.displayDataSource.length || this.state.onMomentumScrollEnd) {
+        if (this.state.displaySource.length >= this.displayDataSource.length) {
             return;
         }
-
-        this.setState({onMomentumScrollEnd: true});
 
         let appPerPage = 10;
         let currentPage = this.state.page;
@@ -98,8 +93,6 @@ class ListingView extends React.Component<Props, State> {
         this.setState({
             page: this.state.page + 1,
             displaySource: [...this.state.displaySource, ...this.displayDataSource.slice(currentPage * appPerPage, (currentPage + 1) * appPerPage)],
-        }, () => {
-            this.setState({onMomentumScrollEnd: false});
         });
     };
 
@@ -140,14 +133,11 @@ class ListingView extends React.Component<Props, State> {
                     <ListingAppView index={index}
                                     appInfo={item}
                                     onUpdateAppInfo={this.handleUpdateAppInfo}/>}
-                keyExtractor={(item, index) => item.appID.toString()}
+                keyExtractor={(item, _) => item.appID.toString()}
                 refreshing={this.state.isRefreshing}
                 onRefresh={this.handleRefresh}
                 onEndReached={this.handleLoadMore}
                 onEndReachedThreshold={0.01}
-                onMomentumScrollBegin={() => {
-                    this.setState({onMomentumScrollEnd: false});
-                }}
                 ListEmptyComponent={<EmptyListView searchText={this.props.searchText}/>}
             />
 
