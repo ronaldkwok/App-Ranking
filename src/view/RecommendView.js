@@ -4,6 +4,7 @@ import Colors from '../Colors';
 import RecommendAppView from './RecommendAppView';
 import MobileApp from '../model/MobileApp';
 import NetworkHelper from '../NetworkHelper';
+import StorageHelper from '../StorageHelper';
 
 type Props = {
     searchText: String,
@@ -35,6 +36,10 @@ class RecommendView extends React.Component<Props, State> {
     }
 
     componentDidMount() {
+        this.handleGetAppData();
+    }
+
+    handleGetAppData = () => {
         NetworkHelper.getRecommendApps()
             .then((mobileApps: [MobileApp]) => {
                 this.dataSource = mobileApps;
@@ -45,8 +50,23 @@ class RecommendView extends React.Component<Props, State> {
             })
             .catch((error) => {
                 console.log(error);
+                this.setState({
+                    isLoading: false,
+                    displaySource: StorageHelper.getApps(MobileApp.appType.Recommend),
+                });
             });
-    }
+    };
+
+    refresh = () => {
+        console.log("refresh")
+        this.setState({
+            isLoading: true,
+            displaySource: [],
+        }, () => {
+            this.handleGetAppData();
+        });
+    };
+
 
     render() {
         if (this.state.isLoading) {

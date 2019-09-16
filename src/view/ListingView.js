@@ -104,6 +104,7 @@ class ListingView extends React.Component<Props, State> {
     };
 
     handleRefresh = () => {
+        this.recommendViewRef.refresh();
         this.setState({
             isRefreshing: true,
             displaySource: [],
@@ -123,7 +124,11 @@ class ListingView extends React.Component<Props, State> {
 
         return (
             <FlatList
-                ListHeaderComponent={<RecommendView searchText={this.props.searchText}/>}
+                ListHeaderComponent={
+                    <RecommendView ref={(ref) => {
+                        this.recommendViewRef = ref;
+                    }} searchText={this.props.searchText}/>
+                }
                 ref={(ref) => {
                     this.flatListRef = ref;
                 }}

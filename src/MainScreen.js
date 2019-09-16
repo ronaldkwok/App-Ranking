@@ -4,9 +4,7 @@ import ListingView from './view/ListingView';
 import {SearchBar} from 'react-native-elements';
 
 class MainScreen extends React.Component {
-    state = {
-        search: '',
-    };
+    state = {search: ''};
 
     updateSearch = search => {
         this.setState({search});

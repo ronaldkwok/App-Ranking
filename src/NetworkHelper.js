@@ -14,8 +14,6 @@ function getTopFreeApps(count: number = 100) {
             StorageHelper.storeRankingApps(apps);
 
             return apps;
-        }).catch((error) => {
-            console.log(error);
         });
 }
 
@@ -31,7 +29,7 @@ function getRecommendApps(count: number = 10) {
                 return app;
             });
 
-            StorageHelper.storeRecommendApps(apps)
+            StorageHelper.storeRecommendApps(apps);
 
             return apps;
         });
