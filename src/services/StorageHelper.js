@@ -3,7 +3,7 @@ import Realm from 'realm';
 
 function storeRankingApps(apps) {
     let appIDs = apps.map(app => app.appID);
-    let realm = new Realm({ schema: [MobileApp] });
+    let realm = new Realm({ schema: [MobileApp.schema] });
     let unwantedAppIDs = realm.objects(MobileApp.schema.name)
         .filtered('isRankingApp = true')
         .map(item => item.appID)

@@ -5,9 +5,11 @@ import itunes from '../api/itunes';
 const getTopFreeApps = async (count = 100) => {
     const response = await itunes.get(`/rss/topfreeapplications/limit=${count}/json`);
     const responseJson = response.data;
+
     let apps = responseJson.feed.entry.map(item => {
-        return new MobileApp(item);
+        return MobileApp.fromJSON(item);
     });
+
     StorageHelper.storeRankingApps(apps);
 
     return apps;
