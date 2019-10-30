@@ -1,46 +1,36 @@
 import MobileApp from '../model/MobileApp';
 import StorageHelper from './StorageHelper';
+import itunes from '../api/itunes';
 
-function getTopFreeApps(count: number = 100) {
-    return fetch('https://itunes.apple.com/hk/rss/topfreeapplications/limit=' + count + '/json')
-        .then((response) => response.json())
-        .then((responseJson) => {
-            let apps = responseJson.feed.entry.map(item => {
-                let app = new MobileApp();
-                app.initData(item);
-                return app;
-            });
+const getTopFreeApps = async (count = 100) => {
+    const response = await itunes.get(`/rss/topfreeapplications/limit=${count}/json`);
+    const responseJson = response.data;
+    let apps = responseJson.feed.entry.map(item => {
+        return new MobileApp(item);
+    });
+    StorageHelper.storeRankingApps(apps);
 
-            StorageHelper.storeRankingApps(apps);
-
-            return apps;
-        });
+    return apps;
 }
 
-function getRecommendApps(count: number = 10) {
-    return fetch('https://itunes.apple.com/hk/rss/topgrossingapplications/limit=' + count + '/json')
-        .then((response) => response.json())
-        .then((responseJson) => {
-            // console.log("realm.path", realm.path);
+const getRecommendApps = async (count = 10) => {
+    const response = await itunes.get(`/rss/topgrossingapplications/limit=${count}/json`);
+    const responseJson = response.data;
+    let apps = responseJson.feed.entry.map(item => {
+        let app = new MobileApp(item);
 
-            let apps = responseJson.feed.entry.map(item => {
-                let app = new MobileApp();
-                app.initData(item, MobileApp.appType.Recommend);
-                return app;
-            });
+        return app;
+    });
+    StorageHelper.storeRecommendApps(apps);
 
-            StorageHelper.storeRecommendApps(apps);
-
-            return apps;
-        });
+    return apps;
 }
 
-function getAppDetail(appID: number) {
-    return fetch('https://itunes.apple.com/hk/lookup?id=' + appID)
-        .then((response) => response.json())
-        .then((responseJson) => {
-            return responseJson;
-        });
+const getAppDetail = async (appID) => {
+    const response = await itunes.get(`/lookup?id=${appID}`);
+    const responseJson = response.data;
+
+    return responseJson;
 }
 
 const NetworkHelper = {

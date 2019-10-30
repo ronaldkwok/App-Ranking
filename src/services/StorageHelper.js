@@ -1,10 +1,13 @@
 import MobileApp from '../model/MobileApp';
 import Realm from 'realm';
 
-function storeRankingApps(apps: [MobileApp]) {
+function storeRankingApps(apps) {
     let appIDs = apps.map(app => app.appID);
-    let realm = new Realm({schema: [MobileApp]});
-    let unwantedAppIDs = realm.objects(MobileApp.schema.name).filtered('isRankingApp = true').map(item => item.appID).filter(x => !appIDs.includes(x));
+    let realm = new Realm({ schema: [MobileApp] });
+    let unwantedAppIDs = realm.objects(MobileApp.schema.name)
+        .filtered('isRankingApp = true')
+        .map(item => item.appID)
+        .filter(x => !appIDs.includes(x));
 
     realm.write(() => {
         for (let x in unwantedAppIDs) {
@@ -33,7 +36,7 @@ function storeRankingApps(apps: [MobileApp]) {
 
 function storeRecommendApps(apps: [MobileApp]) {
     let appIDs = apps.map(app => app.appID);
-    let realm = new Realm({schema: [MobileApp]});
+    let realm = new Realm({ schema: [MobileApp] });
     let unwantedAppIDs = realm.objects(MobileApp.schema.name).filtered('isRecommendApp = true').map(item => item.appID).filter(x => !appIDs.includes(x));
 
     realm.write(() => {
@@ -59,7 +62,7 @@ function storeRecommendApps(apps: [MobileApp]) {
 }
 
 function updateAppInfo(app: MobileApp) {
-    let realm = new Realm({schema: [MobileApp]});
+    let realm = new Realm({ schema: [MobileApp] });
     realm.write(() => {
         realm.create(MobileApp.schema.name, {
             appID: app.appID,
@@ -71,7 +74,7 @@ function updateAppInfo(app: MobileApp) {
 
 function getApps(appType: MobileApp.appType): [MobileApp] {
     let apps: [MobileApp];
-    let realm = new Realm({schema: [MobileApp]});
+    let realm = new Realm({ schema: [MobileApp] });
     let localApps: [];
 
     switch (appType) {

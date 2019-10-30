@@ -1,5 +1,5 @@
 import React from 'react';
-import {ActivityIndicator, FlatList, View, Alert} from 'react-native';
+import { ActivityIndicator, FlatList, View, Alert } from 'react-native';
 import ListingAppView from './ListingAppView';
 import RecommendView from './RecommendView';
 import MobileApp from '../model/MobileApp';
@@ -16,22 +16,32 @@ type State = {
     page: number,
     isRefreshing: boolean,
     displaySource: [MobileApp],
-}
+};
 
 class ListingView extends React.Component<Props, State> {
-
     dataSource: [MobileApp] = [];
     displayDataSource: [MobileApp] = [];
 
     constructor(props) {
         super(props);
-        this.state = {isLoading: true, page: 0, isRefreshing: false, displaySource: []};
+        this.state = {
+            isLoading: true,
+            page: 0,
+            isRefreshing: false,
+            displaySource: [],
+        };
     }
 
-    shouldComponentUpdate(nextProps: Readonly<Props>, nextState: Readonly<State>, nextContext: any): boolean {
+    shouldComponentUpdate(
+        nextProps: Readonly<Props>,
+        nextState: Readonly<State>,
+        nextContext: any,
+    ): boolean {
         if (this.props.searchText !== nextProps.searchText) {
             if (nextProps.searchText) {
-                this.displayDataSource = this.dataSource.filter(item => item.filter(nextProps.searchText));
+                this.displayDataSource = this.dataSource.filter(item =>
+                    item.filter(nextProps.searchText),
+                );
             } else {
                 this.displayDataSource = this.dataSource;
             }
@@ -59,27 +69,33 @@ class ListingView extends React.Component<Props, State> {
                     'Error occur',
                     [
                         {
-                            text: 'OK', onPress: () => {
-                                this.dataSource = StorageHelper.getApps(MobileApp.appType.Ranking);
+                            text: 'OK',
+                            onPress: () => {
+                                this.dataSource = StorageHelper.getApps(
+                                    MobileApp.appType.Ranking,
+                                );
                                 this.displayDataSource = this.dataSource;
                                 this.handleInitDisplay();
                             },
                         },
                     ],
-                    {cancelable: false},
+                    { cancelable: false },
                 );
             });
     }
 
     handleInitDisplay() {
-        this.setState({
-            isLoading: false,
-            page: 1,
-            displaySource: this.displayDataSource.slice(0, 10),
-            isRefreshing: false,
-        }, () => {
-            this.flatListRef.scrollToOffset({animated: false, offset: 0});
-        });
+        this.setState(
+            {
+                isLoading: false,
+                page: 1,
+                displaySource: this.displayDataSource.slice(0, 10),
+                isRefreshing: false,
+            },
+            () => {
+                this.flatListRef.scrollToOffset({ animated: false, offset: 0 });
+            },
+        );
     }
 
     handleLoadMore = () => {
@@ -92,12 +108,20 @@ class ListingView extends React.Component<Props, State> {
 
         this.setState({
             page: this.state.page + 1,
-            displaySource: [...this.state.displaySource, ...this.displayDataSource.slice(currentPage * appPerPage, (currentPage + 1) * appPerPage)],
+            displaySource: [
+                ...this.state.displaySource,
+                ...this.displayDataSource.slice(
+                    currentPage * appPerPage,
+                    (currentPage + 1) * appPerPage,
+                ),
+            ],
         });
     };
 
     handleUpdateAppInfo = (appInfo: MobileApp) => {
-        let objIndex = this.dataSource.findIndex((obj => obj.appID === appInfo.appID));
+        let objIndex = this.dataSource.findIndex(
+            obj => obj.appID === appInfo.appID,
+        );
         if (this.dataSource.length > objIndex) {
             this.dataSource[objIndex] = appInfo;
         }
@@ -105,19 +129,22 @@ class ListingView extends React.Component<Props, State> {
 
     handleRefresh = () => {
         this.recommendViewRef.refresh();
-        this.setState({
-            isRefreshing: true,
-            displaySource: [],
-        }, () => {
-            this.handleGetAppData();
-        });
+        this.setState(
+            {
+                isRefreshing: true,
+                displaySource: [],
+            },
+            () => {
+                this.handleGetAppData();
+            },
+        );
     };
 
     render() {
         if (this.state.isLoading) {
             return (
-                <View style={{flex: 1, padding: 20}}>
-                    <ActivityIndicator/>
+                <View style={{ flex: 1, padding: 20 }}>
+                    <ActivityIndicator />
                 </View>
             );
         }
@@ -125,27 +152,34 @@ class ListingView extends React.Component<Props, State> {
         return (
             <FlatList
                 ListHeaderComponent={
-                    <RecommendView ref={(ref) => {
-                        this.recommendViewRef = ref;
-                    }} searchText={this.props.searchText}/>
+                    <RecommendView
+                        ref={ref => {
+                            this.recommendViewRef = ref;
+                        }}
+                        searchText={this.props.searchText}
+                    />
                 }
-                ref={(ref) => {
+                ref={ref => {
                     this.flatListRef = ref;
                 }}
-                contentContainerStyle={{flexGrow: 1}}
+                contentContainerStyle={{ flexGrow: 1 }}
                 data={this.state.displaySource}
-                renderItem={({item, index}) =>
-                    <ListingAppView index={index}
-                                    appInfo={item}
-                                    onUpdateAppInfo={this.handleUpdateAppInfo}/>}
+                renderItem={({ item, index }) => (
+                    <ListingAppView
+                        index={index}
+                        appInfo={item}
+                        onUpdateAppInfo={this.handleUpdateAppInfo}
+                    />
+                )}
                 keyExtractor={(item, _) => item.appID.toString()}
                 refreshing={this.state.isRefreshing}
                 onRefresh={this.handleRefresh}
                 onEndReached={this.handleLoadMore}
                 onEndReachedThreshold={0.01}
-                ListEmptyComponent={<EmptyListView searchText={this.props.searchText}/>}
+                ListEmptyComponent={
+                    <EmptyListView searchText={this.props.searchText} />
+                }
             />
-
         );
     }
 }
