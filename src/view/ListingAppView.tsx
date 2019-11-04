@@ -1,44 +1,16 @@
-import React from 'react';
-import { ActivityIndicator, StyleSheet, Text, View } from 'react-native';
-import Colors from '../common/Colors';
-import AppIconImageView from './AppIconImageView';
-import MobileApp from '../model/MobileApp';
-import Icon from 'react-native-vector-icons/Entypo';
-import NetworkHelper from '../services/NetworkHelper';
-import StorageHelper from '../services/StorageHelper';
+import React, { Component } from 'react'
+import { StyleSheet, Text, View } from 'react-native'
+import Colors from '../common/Colors'
+import AppIconImageView from './AppIconImageView'
+import MobileApp from '../model/MobileApp'
+import Icon from 'react-native-vector-icons/Entypo'
 
 type Props = {
     appInfo: MobileApp,
     index: number,
 };
 
-type State = {
-    isLoading: boolean
-};
-
-class ListingAppView extends React.Component<Props, State> {
-
-    constructor(props: Props) {
-        super(props);
-        this.state = { isLoading: true };
-    }
-
-    componentDidMount() {
-        if (this.props.appInfo.starsNumber) {
-            this.setState({ isLoading: false });
-            return;
-        }
-
-        return NetworkHelper.getAppDetail(this.props.appInfo.appID)
-            .then((responseJson) => {
-                this.props.appInfo.updateRating(responseJson);
-                StorageHelper.updateAppInfo(this.props.appInfo);
-                this.setState({ isLoading: false });
-            })
-            .catch((error) => {
-                this.setState({ isLoading: false });
-            });
-    }
+class ListingAppView extends Component<Props> {
 
     render() {
         const { appInfo, index } = this.props;
@@ -58,7 +30,7 @@ class ListingAppView extends React.Component<Props, State> {
                     <Text style={styles.categoryText}>{appInfo.category}</Text>
                     {appInfo.starsNumber ?
                         <View style={styles.starView}>
-                            {this.generateStars(appInfo)}
+                            {this.generateStars(appInfo.starsNumber)}
                             <Text style={{ fontSize: 10, color: Colors.dark }}>({appInfo.ratingCount})</Text>
                         </View> : null}
                 </View>
@@ -66,9 +38,9 @@ class ListingAppView extends React.Component<Props, State> {
         );
     }
 
-    generateStars(appInfo) {
-        const starCount = Math.floor(appInfo.starsNumber);
-        var stars = [];
+    generateStars = (starsCount: number) => {
+        const starCount = Math.floor(starsCount);
+        let stars = [];
 
         for (var i = 0; i < starCount; i++) {
             stars.push(<Icon name="star" size={10} color={Colors.yellow} key={i} />);

@@ -6,7 +6,7 @@ const getTopFreeApps = async (count = 100) => {
     const response = await itunes.get(`/rss/topfreeapplications/limit=${count}/json`);
     const responseJson = response.data;
 
-    let apps = responseJson.feed.entry.map(item => {
+    let apps = responseJson.feed.entry.map((item: any) => {
         return MobileApp.fromJSON(item);
     });
 
@@ -18,17 +18,15 @@ const getTopFreeApps = async (count = 100) => {
 const getRecommendApps = async (count = 10) => {
     const response = await itunes.get(`/rss/topgrossingapplications/limit=${count}/json`);
     const responseJson = response.data;
-    let apps = responseJson.feed.entry.map(item => {
-        let app = new MobileApp(item);
-
-        return app;
+    let apps = responseJson.feed.entry.map((item: any) => {
+        return MobileApp.fromJSON(item);
     });
     StorageHelper.storeRecommendApps(apps);
 
     return apps;
 }
 
-const getAppDetail = async (appID) => {
+const getAppDetail = async (appID: string) => {
     const response = await itunes.get(`/lookup?id=${appID}`);
     const responseJson = response.data;
 

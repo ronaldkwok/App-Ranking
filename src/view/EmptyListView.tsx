@@ -1,14 +1,16 @@
 import React from 'react';
 import { Text, View, StyleSheet } from 'react-native';
 
-const EmptyListView = ({ searchText }) => {
+const EmptyListView = ({ searchText }: { searchText: string }) => {
     if (!searchText) {
         return null;
     }
     return (
-        <View style={{flex: 1,
+        <View style={{
+            flex: 1,
             justifyContent: 'center',
-            alignItems: 'center'}}>
+            alignItems: 'center'
+        }}>
             <Text style={styles.text}>沒有結果</Text>
             <Text style={styles.searchText}>「{searchText}」</Text>
         </View>

@@ -1,6 +1,16 @@
 import * as types from '../actions/types';
+import MobileApp from '../model/MobileApp';
 
-const INITIAL_STATE = {
+export interface FreeAppsState {
+    apps: MobileApp[],
+    displayApps: MobileApp[],
+    isFetching: boolean,
+    isError: boolean,
+    searchText: string,
+    page: number,
+}
+
+const INITIAL_STATE: FreeAppsState = {
     apps: [],
     displayApps: [],
     isFetching: false,
@@ -15,26 +25,29 @@ export default (state = INITIAL_STATE, action) => {
             return { ...state, isFetching: true, page: 0, apps: [], displayApps: [] };
         case types.RECEIVE_FREE_APPS:
             return { ...state, isFetching: false, apps: action.payload };
-        case types.LOAD_MORE_FREE_APPS:
-            const apps = state.searchText ? state.apps.filter(item =>
-                item.filter(state.searchText),
-            ) : state.apps;
-
-            if (state.displayApps.length >= apps.length) {
-                return state;
-            }
-
-            const appPerPage = 10;
+        case types.LOAD_MORE_FREE_APPS: {
             const newPage = state.page + 1;
 
             const displayApps = [
                 ...state.displayApps,
-                ...apps.slice(state.page * appPerPage, newPage * appPerPage)
+                ...action.payload
             ];
 
             return { ...state, displayApps: displayApps, page: newPage };
+        }
         case types.FILTER_FREE_APPS:
             return { ...state, searchText: action.payload, page: 0, displayApps: [] };
+        case types.RECEIVE_APP_UPDATE: {
+            const updatedApp = action.payload;
+            const { apps, displayApps } = state;
+
+            const foundIndex = apps.findIndex(x => x.appID == updatedApp.appID);
+            apps[foundIndex] = updatedApp
+
+            const displayIndex = displayApps.findIndex(x => x.appID == updatedApp.appID);
+            displayApps[displayIndex] = updatedApp
+            return { ...state, apps: apps, displayApps: displayApps };
+        }
         default:
             return state;
     }
