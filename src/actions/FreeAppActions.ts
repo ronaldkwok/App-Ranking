@@ -1,8 +1,6 @@
 import * as types from './types';
 import NetworkHelper from '../services/NetworkHelper';
 import MobileApp from '../model/MobileApp';
-import { ThunkAction, ThunkDispatch } from 'redux-thunk'
-import { AnyAction } from 'redux';
 
 export const requestFreeApps = () => {
     return {

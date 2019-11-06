@@ -5,6 +5,7 @@ import { filterFreeApps, loadNewPageApps } from '../actions/FreeAppActions'
 import FreeAppList from '../components/FreeAppList'
 import { connect } from 'react-redux'
 import { bindActionCreators } from "redux"
+import RecommendAppList from '../components/RecommendAppList'
 
 interface Props {
     filterFreeApps: typeof filterFreeApps
@@ -32,6 +33,7 @@ class MainScreen extends Component<Props> {
                     onChangeText={this.updateSearch}
                     value={search}
                 />
+                <RecommendAppList />
                 <FreeAppList />
             </SafeAreaView>
         );

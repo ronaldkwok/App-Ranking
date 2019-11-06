@@ -1,4 +1,4 @@
-import React, { Component, createRef } from 'react'
+import React, { Component } from 'react'
 import { View, ActivityIndicator, FlatList } from 'react-native'
 import { connect } from 'react-redux'
 import { bindActionCreators } from "redux"
