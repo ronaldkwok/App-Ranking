@@ -1,5 +1,5 @@
 import MobileApp from '../model/MobileApp';
-import StorageHelper from './StorageHelper';
+//import StorageHelper from './StorageHelper';
 import itunes from '../api/itunes';
 
 const getTopFreeApps = async (count = 100) => {
@@ -10,7 +10,7 @@ const getTopFreeApps = async (count = 100) => {
         return MobileApp.fromJSON(item);
     });
 
-    StorageHelper.storeRankingApps(apps);
+    //StorageHelper.storeRankingApps(apps);
 
     return apps;
 }
@@ -21,7 +21,7 @@ const getRecommendApps = async (count = 10) => {
     let apps = responseJson.feed.entry.map((item: any) => {
         return MobileApp.fromJSON(item);
     });
-    StorageHelper.storeRecommendApps(apps);
+    //StorageHelper.storeRecommendApps(apps);
 
     return apps;
 }

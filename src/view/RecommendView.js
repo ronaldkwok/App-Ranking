@@ -4,7 +4,7 @@ import Colors from '../common/Colors';
 import RecommendAppView from './RecommendAppView';
 import MobileApp from '../model/MobileApp';
 import NetworkHelper from '../services/NetworkHelper';
-import StorageHelper from '../services/StorageHelper';
+//import StorageHelper from '../services/StorageHelper';
 
 type Props = {
     searchText: String,
@@ -52,7 +52,7 @@ class RecommendView extends React.Component<Props, State> {
                 console.log(error);
                 this.setState({
                     isLoading: false,
-                    displaySource: StorageHelper.getApps(MobileApp.appType.Recommend),
+                    //displaySource: StorageHelper.getApps(MobileApp.appType.Recommend),
                 });
             });
     };
